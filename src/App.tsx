@@ -1,10 +1,10 @@
 import logo from './assets/logo.svg';
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { fetchTracks } from './lib/fetchTracks';
 import { useQuery } from '@tanstack/react-query';
-import { SavedTrack, Track } from 'spotify-types';
-
+import { SavedTrack } from 'spotify-types';
+import swal from 'sweetalert';
 const AlbumCover = ({ track }: { track: SavedTrack }) => {
   const src = track.track.album.images[0]?.url;
   return <img src={src} style={{ width: 400, height: 400 }} />;
@@ -35,6 +35,14 @@ const App = () => {
     if (!isFirsTrack()) setTrackIndex(trackIndex - 1);
   };
 
+  const checkAnswer = (answerId: string) => {
+    if (currentTrack && answerId === currentTrack.track.id) {
+      swal('Bravo', 'Trop fort', 'success');
+    } else {
+      swal('Alerte !!', 'Ceci est une alerte', 'error');
+    }
+  };
+
   const previousTrack =
     tracks && !isFirsTrack() ? tracks[trackIndex - 1] : undefined;
   const currentTrack = tracks ? tracks[trackIndex] : undefined;
@@ -61,6 +69,13 @@ const App = () => {
                 Previous track : {previousTrack.track.name}{' '}
               </button>
             )}
+            <button
+              onClick={() => {
+                checkAnswer(currentTrack.track.id);
+              }}
+            >
+              Check answer
+            </button>
             {nextTrack && (
               <button onClick={goToNextTrack}>
                 Next track : {nextTrack.track.name}{' '}
