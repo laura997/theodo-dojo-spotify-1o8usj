@@ -1,6 +1,6 @@
 import logo from './assets/logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchTracks } from './lib/fetchTracks';
 import { useQuery } from '@tanstack/react-query';
 import { SavedTrack } from 'spotify-types';
@@ -16,20 +16,31 @@ const App = () => {
     queryFn: fetchTracks,
   });
 
-  const numberOfTrackBlindTest = 3;
+  const numberOfTrackBlindTest = 2;
+  const totalNumberOfTracks = tracks ? tracks.length : 0;
+  const numberOfTracks =
+    numberOfTrackBlindTest > totalNumberOfTracks
+      ? totalNumberOfTracks
+      : numberOfTrackBlindTest;
 
-  const shuffledTracks = tracks
-    ? tracks.sort(() => Math.random() - 0.5).slice(numberOfTrackBlindTest)
-    : [];
+  useEffect;
 
   const [trackIndex, setTrackIndex] = useState(0);
+  const [shuffledTracks, setShuffledTracks] = useState<SavedTrack[]>([]);
+  useEffect(() => {
+    setShuffledTracks(
+      tracks
+        ? tracks.sort(() => Math.random() - 0.5).slice(numberOfTrackBlindTest)
+        : [],
+    );
+  }, []);
 
   const isFirsTrack = () => {
     return trackIndex === 0;
   };
 
   const isLastTrack = () => {
-    return trackIndex === numberOfTrackBlindTest - 1;
+    return trackIndex === numberOfTracks - 1;
   };
 
   const goToNextTrack = () => {
