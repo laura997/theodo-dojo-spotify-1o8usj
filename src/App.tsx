@@ -33,7 +33,7 @@ const App = () => {
         ? tracks.sort(() => Math.random() - 0.5).slice(numberOfTrackBlindTest)
         : [],
     );
-  }, []);
+  }, [tracks]);
 
   const isFirsTrack = () => {
     return trackIndex === 0;
