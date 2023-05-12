@@ -16,7 +16,12 @@ const App = () => {
     queryFn: fetchTracks,
   });
 
-  const totalNumberOfTracks = tracks ? tracks.length : 0;
+  const numberOfTrackBlindTest = 3;
+
+  const shuffledTracks = tracks
+    ? tracks.sort(() => Math.random() - 0.5).slice(numberOfTrackBlindTest)
+    : [];
+
   const [trackIndex, setTrackIndex] = useState(0);
 
   const isFirsTrack = () => {
@@ -24,7 +29,7 @@ const App = () => {
   };
 
   const isLastTrack = () => {
-    return trackIndex === totalNumberOfTracks - 1;
+    return trackIndex === numberOfTrackBlindTest - 1;
   };
 
   const goToNextTrack = () => {
@@ -44,10 +49,14 @@ const App = () => {
   };
 
   const previousTrack =
-    tracks && !isFirsTrack() ? tracks[trackIndex - 1] : undefined;
-  const currentTrack = tracks ? tracks[trackIndex] : undefined;
+    shuffledTracks && !isFirsTrack()
+      ? shuffledTracks[trackIndex - 1]
+      : undefined;
+  const currentTrack = shuffledTracks ? shuffledTracks[trackIndex] : undefined;
   const nextTrack =
-    tracks && !isLastTrack() ? tracks[trackIndex + 1] : undefined;
+    shuffledTracks && !isLastTrack()
+      ? shuffledTracks[trackIndex + 1]
+      : undefined;
 
   return (
     <div className="App">
