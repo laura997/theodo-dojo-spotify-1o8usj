@@ -1,29 +1,45 @@
 import logo from './assets/logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchTracks } from './lib/fetchTracks';
 import { useQuery } from '@tanstack/react-query';
 import { SavedTrack, Track } from 'spotify-types';
 
-const AlbumCover = (track: SavedTrack) => {
+const AlbumCover = ({ track }: { track: SavedTrack }) => {
   const src = track.track.album.images[0]?.url;
   return <img src={src} style={{ width: 400, height: 400 }} />;
 };
 
 const App = () => {
-  const [trackIndex, setTrackIndex] = useState(0);
-
-  const goToNextTrack = () => {
-    setTrackIndex(trackIndex + 1);
-  };
-
   const { data: tracks } = useQuery({
     queryKey: ['tracks'],
     queryFn: fetchTracks,
   });
 
-  console.log(tracks?.length);
+  const totalNumberOfTracks = tracks ? tracks.length : 0;
+  const [trackIndex, setTrackIndex] = useState(0);
+
+  const isFirsTrack = () => {
+    return trackIndex === 0;
+  };
+
+  const isLastTrack = () => {
+    return trackIndex === totalNumberOfTracks - 1;
+  };
+
+  const goToNextTrack = () => {
+    if (!isLastTrack()) setTrackIndex(trackIndex + 1);
+  };
+
+  const goToPreviousTrack = () => {
+    if (!isFirsTrack()) setTrackIndex(trackIndex - 1);
+  };
+
+  const previousTrack =
+    tracks && !isFirsTrack() ? tracks[trackIndex - 1] : undefined;
   const currentTrack = tracks ? tracks[trackIndex] : undefined;
+  const nextTrack =
+    tracks && !isLastTrack() ? tracks[trackIndex + 1] : undefined;
 
   return (
     <div className="App">
@@ -31,13 +47,28 @@ const App = () => {
         <img src={logo} className="App-logo" alt="logo" />
         <h1 className="App-title">Bienvenue sur le blind test !</h1>
       </header>
-      <div className="App-images">
-        {currentTrack && <AlbumCover track={currentTrack} />}
-        <div>{currentTrack?.track.name}</div>
-        <audio src={trackUrls[trackIndex]} autoPlay controls />
-        <button onClick={goToNextTrack}>Next track</button>
-      </div>
-      <div className="App-buttons"></div>
+      {currentTrack && (
+        <div>
+          <h1 className="App-music-title"> {currentTrack.track.name} </h1>
+          <div className="App-images">
+            <AlbumCover track={currentTrack} />
+            <div>{currentTrack?.track.name}</div>
+            <audio src={currentTrack.track.preview_url} autoPlay controls />
+          </div>
+          <div className="App-buttons">
+            {previousTrack && (
+              <button onClick={goToPreviousTrack}>
+                Previous track : {previousTrack.track.name}{' '}
+              </button>
+            )}
+            {nextTrack && (
+              <button onClick={goToNextTrack}>
+                Next track : {nextTrack.track.name}{' '}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
