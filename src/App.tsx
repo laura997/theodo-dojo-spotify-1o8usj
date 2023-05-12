@@ -18,22 +18,24 @@ const App = () => {
 
   const numberOfTrackBlindTest = 2;
   const totalNumberOfTracks = tracks ? tracks.length : 0;
-  const numberOfTracks =
-    numberOfTrackBlindTest > totalNumberOfTracks
-      ? totalNumberOfTracks
-      : numberOfTrackBlindTest;
-
-  useEffect;
+  const numberOfTracks = Math.min(totalNumberOfTracks, numberOfTrackBlindTest);
 
   const [trackIndex, setTrackIndex] = useState(0);
   const [shuffledTracks, setShuffledTracks] = useState<SavedTrack[]>([]);
+
   useEffect(() => {
-    setShuffledTracks(
-      tracks
-        ? tracks.sort(() => Math.random() - 0.5).slice(numberOfTrackBlindTest)
-        : [],
-    );
-  }, [tracks]);
+    const getRandomArrayOfTracks = () => {
+      let shuffledTracks = [];
+      for (let i = 0; i < numberOfTracks; i++) {
+        const randomChoice = tracks
+          ? tracks[Math.floor(numberOfTrackBlindTest * Math.random())]
+          : undefined;
+        if (randomChoice) shuffledTracks.push(randomChoice);
+      }
+      return shuffledTracks;
+    };
+    setShuffledTracks(getRandomArrayOfTracks());
+  }, []);
 
   const isFirsTrack = () => {
     return trackIndex === 0;
@@ -80,7 +82,6 @@ const App = () => {
           <h1 className="App-music-title"> {currentTrack.track.name} </h1>
           <div className="App-images">
             <AlbumCover track={currentTrack} />
-            <div>{currentTrack?.track.name}</div>
             <audio src={currentTrack.track.preview_url} autoPlay controls />
           </div>
           <div className="App-buttons">
