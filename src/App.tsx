@@ -35,7 +35,7 @@ const App = () => {
       return shuffledTracks;
     };
     setShuffledTracks(getRandomArrayOfTracks());
-  }, []);
+  }, [tracks]);
 
   const isFirsTrack = () => {
     return trackIndex === 0;
