@@ -22,6 +22,7 @@ const App = () => {
 
   const [trackIndex, setTrackIndex] = useState(0);
   const [shuffledTracks, setShuffledTracks] = useState<SavedTrack[]>([]);
+  const [threeRandomChoice, setThreeRandomChoice] = useState<SavedTrack[]>([]);
 
   useEffect(() => {
     const getRandomArrayOfTracks = () => {
@@ -61,6 +62,11 @@ const App = () => {
     }
   };
 
+  const getThreeRandomChoice = () => {
+    let choice = [];
+    choice.push(currentTrack);
+  };
+
   const previousTrack =
     shuffledTracks && !isFirsTrack()
       ? shuffledTracks[trackIndex - 1]
@@ -80,9 +86,11 @@ const App = () => {
       {currentTrack && (
         <div>
           <h1 className="App-music-title"> {currentTrack.track.name} </h1>
+          <div className="App-music-audio">
+            <audio src={currentTrack.track.preview_url} autoPlay controls />
+          </div>
           <div className="App-images">
             <AlbumCover track={currentTrack} />
-            <audio src={currentTrack.track.preview_url} autoPlay controls />
           </div>
           <div className="App-buttons">
             {previousTrack && (
